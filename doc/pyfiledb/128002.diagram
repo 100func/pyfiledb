@@ -1,0 +1,41 @@
+format 224
+
+classcanvas 128258 class_ref 128002 // end_user
+  simpleclassdiagramsettings end
+  xyz 199.7 90.9 2000
+end
+classcanvas 128386 class_ref 128130 // developer
+  simpleclassdiagramsettings end
+  xyz 201.6 213.1 2000
+end
+usecasecanvas 128514 usecase_ref 128002 // DB manage
+  xyzwh 498.1 78.4 3005 64 32 label_xy 497 111
+end
+usecasecanvas 128642 usecase_ref 128130 // Hashtag manage
+  xyzwh 506.2 190.5 3005 64 32 label_xy 490 222
+end
+usecasecanvas 128770 usecase_ref 128258 // auto DB update
+  xyzwh 609 76.8 3005 64 32 label_xy 598 109
+end
+subject 128898 "pyfiledb"
+  xyzwh 473.6 24.5 2000 223 238
+note 129026 "# Use Case
+
+* Encapsulation of gui and background processing.
+* SQLlite DB
+* Instagram-style
+
+## Features
+
+* Hashtag
+* Search
+* Auto DB update
+"
+  xyzwh 519 441.5 2000 237 221
+line 129154 ---- decenter_begin 333
+  from ref 128258 z 3006 to ref 128514
+line 129282 ----
+  from ref 128386 z 3006 to ref 128642
+line 129410 ----
+  from ref 128514 z 3006 to ref 128770
+end
