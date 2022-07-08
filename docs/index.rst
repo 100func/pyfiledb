@@ -13,6 +13,8 @@ Welcome to pyfiledb's documentation!
 
    pyfiledb
 
+.. todoslist::
+   .vscode setting.json update
 
 Indices and tables
 ==================
