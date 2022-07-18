@@ -1,16 +1,9 @@
-import pprint
 import sqlite3
 from typing import List
 
 
 DBNAME = 'hash.db'
 TABLE = 'hashtable'
-
-
-def hashpasser(data):
-    tmp = data.split('#')
-    del tmp[0]
-    return tmp
 
 
 class DbManager:
@@ -30,25 +23,24 @@ class DbManager:
         )
 
     def append(self, path: str, hashs: str) -> None:
-        if isinstance(hashs, str):
-            hash_str = hashs
         self.cur.execute(
             f'insert into {TABLE} (path, hash) values (?, ?)',
-            (path, hash_str),
+            (path, hashs),
         )
 
     def allselect(self):
         return self.cur.execute(f'select * from {TABLE}')
 
-    def search(self, hashs: List[str]) -> list:
-        tmp = []
-        print('hello')
-        for datum in self.allselect():
-            print('datum', datum)
-            for hash in hashs:
-                if hash in datum[-1]:
-                    print('hash', hash)
-                    tmp.append(datum[1])
+    def _like_search(self, hash):
+        return self.cur.execute(
+            f"select * from {TABLE} where hash like ?", (f'%#{hash}%',))
+
+    def search(self, hashs: List[str]) -> dict:
+        tmp = {}
+        for hash in hashs:
+            for datum in self._like_search(hash):
+                if datum[0] not in tmp:
+                    tmp[datum[1]] = datum[2]
         return tmp
 
     def close(self) -> None:
