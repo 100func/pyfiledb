@@ -45,4 +45,5 @@ class DbManager:
 
     def close(self) -> None:
         self.cur.close()
+        self.con.commit()
         self.con.close()
