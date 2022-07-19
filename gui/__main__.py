@@ -11,6 +11,9 @@ from .parameter import DEFAULT_PATH
 
 
 KV = '''
+<Widget>:
+    font_name: 'ipaexg00401/ipaexg.ttf'
+
 MDBoxLayout:
     orientation: "vertical"
 
@@ -27,15 +30,8 @@ MDBoxLayout:
         text: "Tab 0"
         halign: "center"
 
-    MDRoundFlatIconButton:
-        text: "File select"
-        icon: "folder"
-        pos_hint: {'center_x': .5, 'center_y': .6}
-        on_release: app.file_manager_open()
-
     MDRaisedButton:
         text: "push"
-        # md_bg_color: 1, 0, 1, 1
         pos_hint: {'center_x': 0.5,'center_y': 0.2}
 
 <SearchTab>
@@ -60,9 +56,16 @@ class SearchTab(MDFloatLayout, MDTabsBase):
     pass
 
 
+class EntryData:
+    def __init__(self) -> None:
+        self.path: str = ''
+        self.hashs: str = ''
+
+
 class MainApp(MDApp):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.entrydata = EntryData()
         self.screen = Builder.load_string(KV)
         self.manager_open = False
         self.file_manager = MDFileManager(
@@ -100,10 +103,10 @@ class MainApp(MDApp):
     def on_tab_switch(self, instance_tabs, instance_tab,
                       instance_tab_label, tab_text):
 
-        instance_tab.ids.label.text = tab_text
+        instance_tab.ids.label.text = self.entrydata.hashs
 
     def _on_file_drop(self, window, file_path):
-        print(file_path)
+        self.entrydata.hashs = file_path.decode('utf-8')
 
 
 MainApp().run()
