@@ -16,10 +16,5 @@ def test_dbmng_append():
     dbmng.append(TEST_PATH, TEST_HASH)
 
 
-def test_dbmng_search():
-    reslut = dbmng.search(['hash7', 'hash1'])
-    assert TEST_PATH == reslut[0]
-
-
 def test_dbmng_close():
     dbmng.close()
