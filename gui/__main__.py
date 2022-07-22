@@ -1,8 +1,9 @@
-import multiprocessing as mp
-
 from kivy.app import App
+from kivy.core.clipboard import Clipboard
 from kivy.core.window import Window
 from kivy.uix.tabbedpanel import TabbedPanel
+from kivy.uix.button import Button
+from kivy.uix.label import Label
 from kivy.lang import Builder
 
 import pyfiledb
@@ -12,9 +13,7 @@ Window.size = (700, 250)
 
 
 Builder.load_string("""
-#:import Clipboard kivy.core.clipboard.Clipboard
-
-<Test>:
+<Main>:
     pos_hint: {'center_x': .5, 'center_y': .5}
     do_default_tab: False
 
@@ -22,7 +21,7 @@ Builder.load_string("""
     entry_path_label: entry_path_label
     entry_status_label: entry_status_label
     search_hashs_input: search_hashs_input
-    search_status_label: search_status_label
+    reslut_box: reslut_box
 
     TabbedPanelItem:
         text: 'Entry'
@@ -62,18 +61,12 @@ Builder.load_string("""
                 Button:
                     text: 'Search'
                     on_release: root.search_file()
-            BoxLayout:
-                orientation: 'vertical'
+            ScrollView:
                 size_hint_x: 3
-                Button:
-                    text: 'Copy'
-                    on_release: Clipboard.copy(search_status_label.text)
-                Label:
-                    text: '検索結果'
-                    id: search_status_label
-                    text_size: root.width * 2 / 3, None
-                    font_name: 'ipaexg00401/ipaexg.ttf'
-                    size_hint_y: 5
+                BoxLayout:
+                    id: reslut_box
+                    size_hint_y: None
+                    orientation: "vertical"
 """)
 
 
@@ -93,12 +86,11 @@ entry_data = EntryData()
 search_data = SearchData()
 
 
-class Test(TabbedPanel):
+class Main(TabbedPanel):
     entry_hashs_input = None
     entry_path_label = None
     entry_status_label = None
-    search_hashs_input = None
-    search_status_label = None
+    reslut_box = None
 
     def entry_file(self):
         entry_data.hashs = self.entry_hashs_input.text
@@ -108,27 +100,37 @@ class Test(TabbedPanel):
         filedb.close()
 
     def search_file(self):
+        def _on_press(instance):
+            Clipboard.copy(instance.text)
         search_data.reslut = []  # reset
         search_data.hashs = self.search_hashs_input.text
         filedb = pyfiledb.pyfiledb()
-        search_data.reslut.append(filedb.search(search_data.hashs))
-        if len(search_data.reslut) != 0:
-            tmp_text = []
-            for i, datum in enumerate(search_data.reslut):
-                for key, value in datum.items():
-                    tmp_text.append(f"-[{i}]-\npath: {key}\nhash: {value}")
-            self.search_status_label.text = '\n'.join(tmp_text)
+        try:
+            search_data.reslut.append(filedb.search(search_data.hashs))
+            if len(search_data.reslut) != 0:
+                for datum in search_data.reslut:
+                    for key, value in datum.items():
+                        self.reslut_box.add_widget(
+                            Button(text=f"{key}",
+                                   font_name="ipaexg00401/ipaexg.ttf", on_press=_on_press))
+                        # self.reslut_box.add_widget(
+                        #     Label(text=f"{value}", font_name="ipaexg00401/ipaexg.ttf"))
+        except ValueError:
+            self.reslut_box.add_widget(
+                Label(
+                    text="ハッシュがないか入力が正しくないです",
+                    font_name="ipaexg00401/ipaexg.ttf"))
 
 
-class TabbedPanelApp(App):
+class MainApp(App):
     def build(self):
-        self.test = Test()
+        self.main = Main()
         Window.bind(on_dropfile=self._on_dropped_file)
         return self.test
 
     def _on_dropped_file(self, window, file_path):
         entry_data.file_path = file_path.decode('utf-8')
-        self.test.ids.entry_path_label.text = entry_data.file_path
+        self.main.ids.entry_path_label.text = entry_data.file_path
 
 
-TabbedPanelApp().run()
+MainApp().run()
