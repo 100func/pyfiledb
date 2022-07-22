@@ -2,9 +2,11 @@ from kivy.app import App
 from kivy.core.clipboard import Clipboard
 from kivy.core.window import Window
 from kivy.uix.tabbedpanel import TabbedPanel
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.lang import Builder
+
 
 import pyfiledb
 
@@ -65,7 +67,6 @@ Builder.load_string("""
                 size_hint_x: 3
                 BoxLayout:
                     id: reslut_box
-                    size_hint_y: None
                     orientation: "vertical"
 """)
 
@@ -102,23 +103,43 @@ class Main(TabbedPanel):
     def search_file(self):
         def _on_press(instance):
             Clipboard.copy(instance.text)
+        self.reslut_box.clear_widgets()
         search_data.reslut = []  # reset
         search_data.hashs = self.search_hashs_input.text
         filedb = pyfiledb.pyfiledb()
         try:
             search_data.reslut.append(filedb.search(search_data.hashs))
-            if len(search_data.reslut) != 0:
+            if search_data.reslut != [{}]:
+                _ = BoxLayout()
+                _.add_widget(
+                    Label(text="クリックでPathコピー", font_name="ipaexg00401/ipaexg.ttf", size_hint_x=3.5))
+                _.add_widget(
+                    Label(text="ハッシュ", font_name="ipaexg00401/ipaexg.ttf"))
+                self.reslut_box.add_widget(_)
                 for datum in search_data.reslut:
                     for key, value in datum.items():
-                        self.reslut_box.add_widget(
-                            Button(text=f"{key}",
-                                   font_name="ipaexg00401/ipaexg.ttf", on_press=_on_press))
-                        # self.reslut_box.add_widget(
-                        #     Label(text=f"{value}", font_name="ipaexg00401/ipaexg.ttf"))
+                        _ = BoxLayout()
+                        _.add_widget(
+                            Button(
+                                text=f"{key}",
+                                font_name="ipaexg00401/ipaexg.ttf",
+                                font_size=11,
+                                on_press=_on_press,
+                                size_hint_x=3.5))
+                        _.add_widget(
+                            Label(
+                                text=f"{value}",
+                                font_name="ipaexg00401/ipaexg.ttf"))
+                        self.reslut_box.add_widget(_)
+            else:
+                self.reslut_box.add_widget(
+                    Label(
+                        text="ハッシュ検索 結果なし",
+                        font_name="ipaexg00401/ipaexg.ttf"))
         except ValueError:
             self.reslut_box.add_widget(
                 Label(
-                    text="ハッシュがないか入力が正しくないです",
+                    text="ハッシュが#〇〇〇になってないです",
                     font_name="ipaexg00401/ipaexg.ttf"))
 
 
@@ -126,7 +147,7 @@ class MainApp(App):
     def build(self):
         self.main = Main()
         Window.bind(on_dropfile=self._on_dropped_file)
-        return self.test
+        return self.main
 
     def _on_dropped_file(self, window, file_path):
         entry_data.file_path = file_path.decode('utf-8')
