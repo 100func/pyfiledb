@@ -1,112 +1,134 @@
-from kivy.lang import Builder
+import multiprocessing as mp
+
+from kivy.app import App
 from kivy.core.window import Window
+from kivy.uix.tabbedpanel import TabbedPanel
+from kivy.lang import Builder
 
-from kivymd.app import MDApp
-from kivymd.uix.filemanager import MDFileManager
-from kivymd.uix.floatlayout import MDFloatLayout
-from kivymd.uix.tab import MDTabsBase
-from kivymd.toast import toast
-
-from .parameter import DEFAULT_PATH
+import pyfiledb
 
 
-KV = '''
-<Widget>:
-    font_name: 'ipaexg00401/ipaexg.ttf'
-
-MDBoxLayout:
-    orientation: "vertical"
-
-    MDToolbar:
-        title: "PyFileDB"
-
-    MDTabs:
-        id: tabs
-        on_tab_switch: app.on_tab_switch(*args)
-
-<EntryTab>
-    MDLabel:
-        id: label
-        text: "Tab 0"
-        halign: "center"
-
-    MDRaisedButton:
-        text: "push"
-        pos_hint: {'center_x': 0.5,'center_y': 0.2}
-
-<SearchTab>
-    MDLabel:
-        id: label
-        text: "Tab 0"
-        halign: "center"
-
-    MDTextField:
-        hint_text: "No helper text"
-        pos_hint: {'center_x': 0.5,'center_y': 0.3}
-'''
+Window.size = (700, 250)
 
 
-class EntryTab(MDFloatLayout, MDTabsBase):
-    '''Class implementing content for a tab.'''
-    pass
+Builder.load_string("""
+#:import Clipboard kivy.core.clipboard.Clipboard
 
+<Test>:
+    pos_hint: {'center_x': .5, 'center_y': .5}
+    do_default_tab: False
 
-class SearchTab(MDFloatLayout, MDTabsBase):
-    '''Class implementing content for a tab.'''
-    pass
+    entry_hashs_input: entry_hashs_input
+    entry_path_label: entry_path_label
+    entry_status_label: entry_status_label
+    search_hashs_input: search_hashs_input
+    search_status_label: search_status_label
+
+    TabbedPanelItem:
+        text: 'Entry'
+        BoxLayout:
+            orientation: 'vertical'
+            TextInput:
+                id: entry_hashs_input
+                text: 'ハッシュを「#xxxx#yyyy」のように入力'
+                font_name: 'ipaexg00401/ipaexg.ttf'
+                size_hint_y: 1
+            Label:
+                id: entry_path_label
+                text: 'ファイルをドラッグ＆ドロップ'
+                font_name: 'ipaexg00401/ipaexg.ttf'
+                font_size: 13
+                size_hint_y: 1
+            Label:
+                id: entry_status_label
+                text: ''
+                font_name: 'ipaexg00401/ipaexg.ttf'
+                font_size: 14
+                size_hint_y: 3
+            Button:
+                text: 'Entry'
+                on_release: root.entry_file()
+                size_hint_y: 1
+
+    TabbedPanelItem:
+        text: 'Search'
+        BoxLayout:
+            BoxLayout:
+                orientation: 'vertical'
+                TextInput:
+                    id: search_hashs_input
+                    text: 'ハッシュを「#xxxx#yyyy」のように入力'
+                    font_name: 'ipaexg00401/ipaexg.ttf'
+                Button:
+                    text: 'Search'
+                    on_release: root.search_file()
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_x: 3
+                Button:
+                    text: 'Copy'
+                    on_release: Clipboard.copy(search_status_label.text)
+                Label:
+                    text: '検索結果'
+                    id: search_status_label
+                    text_size: root.width * 2 / 3, None
+                    font_name: 'ipaexg00401/ipaexg.ttf'
+                    size_hint_y: 5
+""")
 
 
 class EntryData:
     def __init__(self) -> None:
-        self.path: str = ''
-        self.hashs: str = ''
+        self.file_path = ''
+        self.hashs = ''
 
 
-class MainApp(MDApp):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.entrydata = EntryData()
-        self.screen = Builder.load_string(KV)
-        self.manager_open = False
-        self.file_manager = MDFileManager(
-            exit_manager=self.exit_manager,
-            select_path=self.select_path,
-            # preview=True,
-        )
-
-    def build(self, ):
-        Window.bind(on_dropfile=self._on_file_drop)
-        self.theme_cls.primary_palette = "Green"
-        return self.screen
-
-    def file_manager_open(self):
-        self.file_manager.show(DEFAULT_PATH)
-        self.manager_open = True
-
-    def select_path(self, path):
-        self.exit_manager()
-        toast(path)
-
-    def exit_manager(self, *args):
-        self.manager_open = False
-
-    def events(self, instance, keyboard, keycode, text, modifiers):
-        if keyboard in (1001, 27):
-            if self.manager_open:
-                self.file_manager.back()
-        return True
-
-    def on_start(self):
-        self.root.ids.tabs.add_widget(EntryTab(title="Entry"))
-        self.root.ids.tabs.add_widget(SearchTab(title="Search"))
-
-    def on_tab_switch(self, instance_tabs, instance_tab,
-                      instance_tab_label, tab_text):
-
-        instance_tab.ids.label.text = self.entrydata.hashs
-
-    def _on_file_drop(self, window, file_path):
-        self.entrydata.hashs = file_path.decode('utf-8')
+class SearchData:
+    def __init__(self) -> None:
+        self.hashs = ''
+        self.reslut = []
 
 
-MainApp().run()
+entry_data = EntryData()
+search_data = SearchData()
+
+
+class Test(TabbedPanel):
+    entry_hashs_input = None
+    entry_path_label = None
+    entry_status_label = None
+    search_hashs_input = None
+    search_status_label = None
+
+    def entry_file(self):
+        entry_data.hashs = self.entry_hashs_input.text
+        self.entry_status_label.text = f"{entry_data.file_path}\n{entry_data.hashs}\nを追加"
+        filedb = pyfiledb.pyfiledb()
+        filedb.append(entry_data.file_path, entry_data.hashs)
+        filedb.close()
+
+    def search_file(self):
+        search_data.reslut = []  # reset
+        search_data.hashs = self.search_hashs_input.text
+        filedb = pyfiledb.pyfiledb()
+        search_data.reslut.append(filedb.search(search_data.hashs))
+        if len(search_data.reslut) != 0:
+            tmp_text = []
+            for i, datum in enumerate(search_data.reslut):
+                for key, value in datum.items():
+                    tmp_text.append(f"-[{i}]-\npath: {key}\nhash: {value}")
+            self.search_status_label.text = '\n'.join(tmp_text)
+
+
+class TabbedPanelApp(App):
+    def build(self):
+        self.test = Test()
+        Window.bind(on_dropfile=self._on_dropped_file)
+        return self.test
+
+    def _on_dropped_file(self, window, file_path):
+        entry_data.file_path = file_path.decode('utf-8')
+        self.test.ids.entry_path_label.text = entry_data.file_path
+
+
+TabbedPanelApp().run()
