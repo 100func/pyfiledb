@@ -1,16 +1,13 @@
 pyfiledb package
 ================
 
-Submodules
-----------
-
-pyfiledb.core module
---------------------
-
 .. automodule:: pyfiledb.core
    :members:
    :undoc-members:
    :show-inheritance:
+
+Submodules
+----------
 
 pyfiledb.dbmng module
 ---------------------
