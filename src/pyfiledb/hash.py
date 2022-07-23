@@ -23,7 +23,7 @@ class HashFilter:
             return tmp
 
     @staticmethod
-    def check(data: str) -> bool:
+    def check(hashs: str) -> bool:
         """Hash format check
 
         Args:
@@ -37,7 +37,7 @@ class HashFilter:
         """
         pattern = r"(#[a-zA-Z0-9]*)*"
         repatter = re.compile(pattern)
-        reslut = repatter.match(data)
+        reslut = repatter.match(hashs)
         if reslut.group() == '':
             raise ValueError('The hash format is incorrect.')
         return True
