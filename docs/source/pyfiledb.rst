@@ -1,5 +1,5 @@
-pyfiledb package
-================
+pyfiledb
+========
 
 .. automodule:: pyfiledb.core
    :members:

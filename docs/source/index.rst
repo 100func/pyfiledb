@@ -10,6 +10,8 @@ Welcome to pyfiledb's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   pyfiledb.rst
+
 
 Indices and tables
 ==================
