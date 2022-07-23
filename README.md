@@ -1,3 +1,21 @@
 # pyfiledb
 
-()[https://kivymd.readthedocs.io/en/0.104.2/components/tabs/index.html]
+## ファイルにシンプルな印
+毎日の仕事の中で、ファイルを探すことに躍起になっていないですか？
+わたしはその1人です。
+このpyfiledbは、YouTubeやInstagramの用に
+fileのpathに対して、任意のハッシュタグをつけることで、
+ハッシュタグ検索することができます。
+また、API,CLI,GUIの3つのインターフェースを持っており、
+それら全てが完全フリーで配布しております。(MITライセンス)
+
+## APIの使用
+
+## CLIの使用
+
+## GUIの使用
+
+## 今後の改善
+＊ 登録したファイルのプロファイルを削除する機能
+＊ CLIとGUIのAhead-Of-Timeコンパイル
+＊ 探索アルゴリズムの最適化
