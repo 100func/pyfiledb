@@ -5,9 +5,8 @@ Do you find yourself searching for files in your daily work?
 I am one of them.
 This pyfiledb is a simple way to mark a file path with an arbitrary hashtag, just like YouTube or Instagram.
 You can search for files by adding any hashtag to the file's path.
-You can search for hashtags by adding any hashtag to the path of the file, like YouTube or Instagram.
-It has three interfaces (API, CLI, and GUI), and all of them are completely free.
-All of them are distributed completely free of charge. (MIT License)
+
+It has three interfaces (API, CLI, and GUI), and all of them are completely free.(MIT License)
 
 ## Using API
 Install pyfiledb.
