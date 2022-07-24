@@ -154,4 +154,10 @@ class MainApp(App):
         self.main.ids.entry_path_label.text = entry_data.file_path
 
 
-MainApp().run()
+def run():
+    print('hello')
+    MainApp().run()
+
+
+if __name__ == '__main__':
+    run()

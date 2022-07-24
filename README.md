@@ -1,21 +1,66 @@
 # pyfiledb
 
-## ファイルにシンプルな印
-毎日の仕事の中で、ファイルを探すことに躍起になっていないですか？
-わたしはその1人です。
-このpyfiledbは、YouTubeやInstagramの用に
-fileのpathに対して、任意のハッシュタグをつけることで、
-ハッシュタグ検索することができます。
-また、API,CLI,GUIの3つのインターフェースを持っており、
-それら全てが完全フリーで配布しております。(MITライセンス)
+## Simple mark on a file
+Do you find yourself searching for files in your daily work?
+I am one of them.
+This pyfiledb is a simple way to mark a file path with an arbitrary hashtag, just like YouTube or Instagram.
+You can search for files by adding any hashtag to the file's path.
+You can search for hashtags by adding any hashtag to the path of the file, like YouTube or Instagram.
+It has three interfaces (API, CLI, and GUI), and all of them are completely free.
+All of them are distributed completely free of charge. (MIT License)
 
-## APIの使用
+## Using API
+Install pyfiledb.
+```bash
+>python setup.py install
+```
 
-## CLIの使用
+append adds file information, and search allows hash searches.
+```python
+>>> from pyfiledb import pyfiledb
+>>>> filedb = pyfiledb()
+>>> filedb.append('xxx/yyy/zzz.txt', '#hash1#hash2')
+>>>> filedb.search('#hash2')
+{'xxx/yyy/zzz.txt': '#hash1#hash2'}
+>>> filedb.close()
+```
 
-## GUIの使用
+## Using CLI
+INSTALL pyfiledb.
+````bash
+>python setup.py install
+```
 
-## 今後の改善
-＊ 登録したファイルのプロファイルを削除する機能
-＊ CLIとGUIのAhead-Of-Timeコンパイル
-＊ 探索アルゴリズムの最適化
+Add file information with append.
+```bash
+> pyfiledb-cli add
+path: xxx/yyyy/zzz.txt  
+hashs: #hash1#hash2
+````
+
+search to search for hashes
+```bash
+> pyfiledb-cli search
+hashs: #hash1 
+-[0]-------------
+path: xxx/yyyy/zzz.txt
+hashs: #hash1#hash2
+```
+
+## Using GUI
+Install kivy.
+```bash
+>pip install kivy
+```
+
+Start the GUI application is the following code.
+```bash
+>python -m pyfiledb.gui
+```
+
+
+## Future improvements.
+* Ability to delete profiles of registered files.
+* Ahead-Of-Time compilation of CLI and GUI
+* Optimization of search algorithm
+* Support for with statements
