@@ -26,7 +26,7 @@ append adds file information, and search allows hash searches.
 
 ## Using CLI
 INSTALL pyfiledb.
-````bash
+```bash
 >python setup.py install
 ```
 
@@ -35,7 +35,7 @@ Add file information with append.
 > pyfiledb-cli add
 path: xxx/yyyy/zzz.txt  
 hashs: #hash1#hash2
-````
+```
 
 search to search for hashes
 ```bash
@@ -47,16 +47,8 @@ hashs: #hash1#hash2
 ```
 
 ## Using GUI
-Install kivy.
-```bash
->pip install kivy
-```
-
-Start the GUI application is the following code.
-```bash
->python -m pyfiledb.gui
-```
-
+Windows exe zip file.
+[https://github.com/100func/pyfiledb/releases/tag/0.5.3](https://github.com/100func/pyfiledb/releases/tag/0.5.3)
 
 ## Future improvements.
 * Ability to delete profiles of registered files.
