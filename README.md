@@ -47,16 +47,8 @@ hashs: #hash1#hash2
 ```
 
 ## Using GUI
-Install kivy.
-```bash
->pip install kivy
-```
-
-Start the GUI application is the following code.
-```bash
->python -m pyfiledb.gui
-```
-
+Windows exe zip file.
+[https://github.com/100func/pyfiledb/releases/tag/0.5.3](https://github.com/100func/pyfiledb/releases/tag/0.5.3)
 
 ## Future improvements.
 * Ability to delete profiles of registered files.
